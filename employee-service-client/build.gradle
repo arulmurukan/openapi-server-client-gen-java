@@ -1,0 +1,56 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.2'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '7.11.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+openApiGenerate {
+	generatorName.set('spring')
+	configOptions.set([
+			library: 'spring-http-interface',
+			openApiNullable: 'false',
+			documentationProvider: 'none',
+
+			interfaceOnly: 'true'
+	])
+	ignoreFileOverride.set(".openapi-generator-java-sources.ignore")
+
+	inputSpec.set('src/main/resources/openapi/employee_service.yaml')
+
+	invokerPackage.set('com.example.employee')
+			modelPackage.set('com.example.employee.service.model')
+			apiPackage.set('com.example.employee.service.api')
+}
+
+tasks.named('compileJava') {
+	dependsOn(tasks.openApiGenerate)
+}
+
+sourceSets.main.java.srcDir "build/generate-resources/main/src/main/java"
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

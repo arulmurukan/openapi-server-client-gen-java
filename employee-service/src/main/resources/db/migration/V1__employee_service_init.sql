@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS EMPLOYEE
+(
+    ID                  SERIAL PRIMARY KEY,
+    NAME                VARCHAR(250),
+    AGE                 INT
+);
+
+INSERT INTO EMPLOYEE (NAME, AGE) VALUES ('ARUL', 48), ('ASWIN', 10)
